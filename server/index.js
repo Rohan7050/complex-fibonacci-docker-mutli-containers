@@ -41,7 +41,7 @@ const redisPublisher = redisClient.duplicate();
 // Express route handlers
 
 app.get('/', (req, res) => {
-  res.send('Hi Docker!');
+  res.send('Hi');
 });
 
 app.get('/values/all', async (req, res) => {
