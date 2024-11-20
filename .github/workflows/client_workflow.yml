@@ -1,0 +1,25 @@
+name: Client Deployment workflow
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - client/**
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: "checkout code"
+        uses: actions/checkout@v4
+      - name: "run tests"
+        run: |
+          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/client-test -f ./client/Dockerfile.dev ./client
+          docker run -e CI=true ${{ secrets.DOCKER_USERNAME }}/react-test npm test
+      - name: "build image"
+        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/multi-client ./client
+      - name: "push image"
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/multi-client
+
+
